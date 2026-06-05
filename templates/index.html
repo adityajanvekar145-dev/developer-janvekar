@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .password-display {
+            margin-top: 25px;
+        }
+        
+        .password-label {
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: block;
+        }
+        
+        .password-output {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        #passwordOutput {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            background-color: #f9f9f9;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            min-width: 100px;
+        }
+        
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        
+        .copy-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .features {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .features h3 {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .features ul {
+            list-style: none;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .features li {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Password Generator</h1>
+        
+        <div class="input-group">
+            <label for="passwordLength">Password Length:</label>
+            <input 
+                type="number" 
+                id="passwordLength" 
+                value="12" 
+                min="4" 
+                max="128"
+                placeholder="Enter password length"
+            >
+        </div>
+        
+        <button onclick="generatePassword()">Generate Password</button>
+        
+        <div class="password-display">
+            <label class="password-label">Generated Password:</label>
+            <div class="password-output">
+                <input 
+                    type="text" 
+                    id="passwordOutput" 
+                    readonly 
+                    placeholder="Click 'Generate Password' to create a strong password"
+                >
+                <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()" disabled>
+                    Copy
+                </button>
+            </div>
+        </div>
+        
+        <div class="message" id="message"></div>
+        
+        <div class="features">
+            <h3>Password Strength Includes:</h3>
+            <ul>
+                <li>Uppercase letters (A-Z)</li>
+                <li>Lowercase letters (a-z)</li>
+                <li>Numbers (0-9)</li>
+                <li>Special characters (!@#$%^&*)</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        function generatePassword() {
+            const length = parseInt(document.getElementById('passwordLength').value);
+            
+            // Validate length on client side
+            if (isNaN(length) || length < 4) {
+                showMessage('Password length must be at least 4 characters!', 'error');
+                return;
+            }
+            
+            if (length > 128) {
+                showMessage('Password length cannot exceed 128 characters!', 'error');
+                return;
+            }
+            
+            // Send request to backend
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ length: length })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showMessage(data.error, 'error');
+                } else {
+                    document.getElementById('passwordOutput').value = data.password;
+                    document.getElementById('copyBtn').disabled = false;
+                    showMessage('Password generated successfully!', 'success');
+                }
+            })
+            .catch(error => {
+                showMessage('Error generating password: ' + error, 'error');
+            });
+        }
+        
+        function copyToClipboard() {
+            const passwordOutput = document.getElementById('passwordOutput');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            if (passwordOutput.value) {
+                passwordOutput.select();
+                document.execCommand('copy');
+                showMessage('Password copied to clipboard!', 'success');
+            }
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Allow Enter key to generate password
+        document.getElementById('passwordLength').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generatePassword();
+            }
+        });
+    </script>
+</body>
+</html>
